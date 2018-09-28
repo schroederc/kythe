@@ -166,11 +166,6 @@ def _java_extract_kindex_impl(ctx):
     )
 
     args = ctx.attr.opts + [
-        # TODO(schroederc): properly support --release options
-        "-target",
-        "9",
-        "-source",
-        "9",
         "-encoding",
         "utf-8",
         "-cp",
@@ -428,6 +423,7 @@ def java_verifier_test(
         size = "small",
         tags = [],
         indexer_opts = ["--verbose"],
+        extractor_opts = ["--release", "9"],
         verifier_opts = ["--ignore_dups"],
         load_plugin = None,
         extra_goals = [],
@@ -437,6 +433,7 @@ def java_verifier_test(
         java_extract_kindex,
         name = name + "_kindex",
         srcs = srcs,
+        opts = extractor_opts,
         # This is a hack to depend on the .jar producer.
         deps = [d + "_kindex" for d in deps],
         data = meta,

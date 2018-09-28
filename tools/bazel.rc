@@ -11,7 +11,6 @@ build --experimental_strict_action_env
 
 # By default, compile for Java 9
 build --javacopt='--release 9'
-build --nojava_header_compilation # https://github.com/bazelbuild/bazel/issues/5733
 
 # Ensure that we do not use an older Java version for the --javabase.
 build --javabase=@bazel_tools//tools/jdk:host_jdk

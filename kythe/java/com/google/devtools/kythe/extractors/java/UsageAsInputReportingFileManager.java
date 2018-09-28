@@ -21,6 +21,7 @@ import com.google.common.collect.Lists;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -142,6 +143,12 @@ class UsageAsInputReportingFileManager extends ForwardingJavaFileManager<Standar
   @Override
   public Iterable<? extends File> getLocation(Location location) {
     return fileManager.getLocation(location);
+  }
+
+  @Override
+  public void setLocationFromPaths(Location location, Collection<? extends Path> paths)
+      throws IOException {
+    ((StandardJavaFileManager) fileManager).setLocationFromPaths(location, paths);
   }
 
   // StandardJavaFileManager doesn't like it when it's asked about a JavaFileObject

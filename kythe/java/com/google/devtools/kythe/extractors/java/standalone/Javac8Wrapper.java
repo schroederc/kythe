@@ -71,8 +71,17 @@ public class Javac8Wrapper extends AbstractJavacWrapper {
             Option.CLASS_PATH, Option.SOURCE_PATH,
             Option.PROCESSOR_PATH, Option.PROCESSOR);
 
-    // Retrieve all other javac options.
     List<String> completeOptions = new ArrayList<>();
+    if (options.isSet(Option.RELEASE)) {
+      // If --release is set, claim it and the associated -source/-target flags.
+      completeOptions.add(Option.RELEASE.getPrimaryName());
+      completeOptions.add(options.get(Option.RELEASE));
+      claimed.add(Option.RELEASE);
+      claimed.add(Option.SOURCE);
+      claimed.add(Option.TARGET);
+    }
+
+    // Retrieve all other javac options.
     for (Option opt : Option.values()) {
       if (!claimed.contains(opt)) {
         String value = options.get(opt);

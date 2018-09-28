@@ -18,8 +18,10 @@ package com.google.devtools.kythe.platform.java.filemanager;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -200,6 +202,12 @@ public class JavaFileStoreBasedFileManager
   @Override
   public void setLocation(Location location, Iterable<? extends File> path) throws IOException {
     fileManager.setLocation(location, path);
+  }
+
+  @Override
+  public void setLocationFromPaths(Location location, Collection<? extends Path> paths)
+      throws IOException {
+    ((StandardJavaFileManager) fileManager).setLocationFromPaths(location, paths);
   }
 
   public static Kind getKind(String name) {
