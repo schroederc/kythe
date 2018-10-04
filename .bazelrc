@@ -1,0 +1,9 @@
+# Remote Build Execution requires a strong hash function, such as SHA256.
+startup --host_jvm_args=-Dbazel.DigestFunction=SHA256
+
+# By default, compile for Java 8
+build --javacopt='--release 8'
+build --nojava_header_compilation # https://github.com/bazelbuild/bazel/issues/5733
+
+# Ensure that we do not use an older Java version for the --javabase.
+build --javabase=@bazel_tools//tools/jdk:host_jdk

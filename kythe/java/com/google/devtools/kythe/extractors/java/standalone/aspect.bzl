@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("//tools/build_rules/verifier_test:verifier_test.bzl", "extract")
+load("@io_kythe//tools/build_rules/verifier_test:verifier_test.bzl", "extract")
 
 def _extract_java_aspect(target, ctx):
     if JavaInfo not in target or not hasattr(ctx.rule.attr, "srcs"):
@@ -89,7 +89,7 @@ extract_java_aspect = aspect(
     attr_aspects = ["srcs"],
     attrs = {
         "_java_aspect_vnames_config": attr.label(
-            default = Label("//kythe/data:vnames_config"),
+            default = Label("@io_kythe//kythe/data:vnames_config"),
             allow_single_file = True,
         ),
         "_java_aspect_extractor": attr.label(

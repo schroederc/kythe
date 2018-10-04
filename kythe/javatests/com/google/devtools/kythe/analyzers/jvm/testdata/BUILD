@@ -1,8 +1,8 @@
-load("//tools/build_rules/verifier_test:verifier_test.bzl", "jvm_verifier_test")
+load("@io_kythe//tools/build_rules/verifier_test:verifier_test.bzl", "jvm_verifier_test")
 
 exports_files(
     ["jvm_nodes.kythe_verifier.txt"],
-    visibility = ["//kythe/javatests/com/google/devtools/kythe/analyzers/java/testdata/pkg:__pkg__"],
+    visibility = ["@io_kythe//kythe/javatests/com/google/devtools/kythe/analyzers/java/testdata/pkg:__pkg__"],
 )
 
 jvm_verifier_test(
@@ -17,5 +17,5 @@ jvm_verifier_test(
         # Ignore singletons that are used in the Java indexer side of the JVM tests.
         "--nocheck_for_singletons",
     ],
-    deps = ["//kythe/javatests/com/google/devtools/kythe/analyzers/java/testdata/pkg:jvm_tests"],
+    deps = ["@io_kythe//kythe/javatests/com/google/devtools/kythe/analyzers/java/testdata/pkg:jvm_tests"],
 )

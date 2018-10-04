@@ -5,8 +5,8 @@ java_test(
     test_class = "com.google.devtools.kythe.analyzers.jvm.JvmGraphTest",
     deps = [
         "//kythe/java/com/google/devtools/kythe/analyzers/jvm:jvm_graph",
-        "//third_party/guava",
-        "//third_party/truth",
+        "@io_kythe//third_party/guava",
+        "@io_kythe//third_party/truth",
         "@junit_junit//jar",
     ],
 )

@@ -1,5 +1,5 @@
 load(
-    "//tools/build_rules/verifier_test:verifier_test.bzl",
+    "@io_kythe//tools/build_rules/verifier_test:verifier_test.bzl",
     "java_verifier_test",
     "kythe_integration_test",
 )
@@ -14,8 +14,8 @@ java_library(
             "ProtobufMetadata.java",
         ],
     ),
-    visibility = ["//kythe/javatests/com/google/devtools/kythe/analyzers/java/testdata:__subpackages__"],
-    exports = ["//kythe/javatests/com/google/devtools/kythe/analyzers/java/testdata/pkg/regression"],
+    visibility = ["@io_kythe//kythe/javatests/com/google/devtools/kythe/analyzers/java/testdata:__subpackages__"],
+    exports = ["@io_kythe//kythe/javatests/com/google/devtools/kythe/analyzers/java/testdata/pkg/regression"],
     deps = ["@com_google_code_findbugs_jsr305//jar"],
 )
 
@@ -191,7 +191,7 @@ java_verifier_test(
     name = "generics_tests",
     size = "small",
     srcs = ["Generics.java"],
-    visibility = ["//kythe/go/serving/tools/testdata:__pkg__"],
+    visibility = ["@io_kythe//kythe/go/serving/tools/testdata:__pkg__"],
 )
 
 java_verifier_test(
@@ -277,7 +277,7 @@ java_verifier_test(
     size = "small",
     srcs = ["PluginTests.java"],
     indexer_opts = ["--emit_jvm=semantic"],
-    load_plugin = "//kythe/javatests/com/google/devtools/kythe/analyzers/java:test_plugin",
+    load_plugin = "@io_kythe//kythe/javatests/com/google/devtools/kythe/analyzers/java:test_plugin",
 )
 
 java_verifier_test(
@@ -299,11 +299,11 @@ java_verifier_test(
     name = "jvm_tests",
     size = "small",
     srcs = ["Jvm.java"],
-    extra_goals = ["//kythe/javatests/com/google/devtools/kythe/analyzers/jvm/testdata:jvm_nodes.kythe_verifier.txt"],
+    extra_goals = ["@io_kythe//kythe/javatests/com/google/devtools/kythe/analyzers/jvm/testdata:jvm_nodes.kythe_verifier.txt"],
     indexer_opts = ["--emit_jvm=semantic"],
     verifier_opts = [
         "--ignore_dups",
         "--convert_marked_source",
     ],
-    visibility = ["//kythe/javatests/com/google/devtools/kythe/analyzers/jvm/testdata:__pkg__"],
+    visibility = ["@io_kythe//kythe/javatests/com/google/devtools/kythe/analyzers/jvm/testdata:__pkg__"],
 )
