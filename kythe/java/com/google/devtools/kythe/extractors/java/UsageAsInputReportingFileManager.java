@@ -16,10 +16,11 @@
 
 package com.google.devtools.kythe.extractors.java;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -115,7 +116,12 @@ class UsageAsInputReportingFileManager extends ForwardingJavaFileManager<Standar
 
   @Override
   public Iterable<? extends JavaFileObject> getJavaFileObjects(String... names) {
-    return getJavaFileForSources(Lists.newArrayList(names));
+    return getJavaFileForSources(ImmutableList.copyOf(names));
+  }
+
+  @Override
+  public Iterable<? extends JavaFileObject> getJavaFileObjects(File... files) {
+    return getJavaFileObjectsFromFiles(ImmutableList.copyOf(files));
   }
 
   @Override
@@ -131,11 +137,6 @@ class UsageAsInputReportingFileManager extends ForwardingJavaFileManager<Standar
   }
 
   @Override
-  public Iterable<? extends JavaFileObject> getJavaFileObjects(File... files) {
-    return getJavaFileObjectsFromFiles(Lists.newArrayList(files));
-  }
-
-  @Override
   public void setLocation(Location location, Iterable<? extends File> path) throws IOException {
     fileManager.setLocation(location, path);
   }
@@ -145,10 +146,16 @@ class UsageAsInputReportingFileManager extends ForwardingJavaFileManager<Standar
     return fileManager.getLocation(location);
   }
 
-  @Override
+  // TODO(schroederc): @Override; method added in JDK9
   public void setLocationFromPaths(Location location, Collection<? extends Path> paths)
       throws IOException {
-    ((StandardJavaFileManager) fileManager).setLocationFromPaths(location, paths);
+    try {
+      StandardJavaFileManager.class
+          .getMethod("setLocationFromPaths", Location.class, Collection.class)
+          .invoke(fileManager, location, paths);
+    } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+      throw new IllegalStateException("setLocationFromPaths called by unsupported Java version", e);
+    }
   }
 
   // StandardJavaFileManager doesn't like it when it's asked about a JavaFileObject

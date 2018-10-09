@@ -18,6 +18,7 @@ package com.google.devtools.kythe.platform.java.filemanager;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -204,10 +205,16 @@ public class JavaFileStoreBasedFileManager
     fileManager.setLocation(location, path);
   }
 
-  @Override
+  // TODO(schroederc): @Override; method added in JDK9
   public void setLocationFromPaths(Location location, Collection<? extends Path> paths)
       throws IOException {
-    ((StandardJavaFileManager) fileManager).setLocationFromPaths(location, paths);
+    try {
+      StandardJavaFileManager.class
+          .getMethod("setLocationFromPaths", Location.class, Collection.class)
+          .invoke(fileManager, location, paths);
+    } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+      throw new IllegalStateException("setLocationFromPaths called by unsupported Java version", e);
+    }
   }
 
   public static Kind getKind(String name) {
