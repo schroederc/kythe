@@ -1,0 +1,4 @@
+build --strategy=KotlinCompile=worker
+
+build --noincompatible_remove_native_http_archive
+build --nouse_ijars --nojava_header_compilation
