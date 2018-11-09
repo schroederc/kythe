@@ -28,6 +28,7 @@ release_version = "v0.0.29"
 genrule(
     name = "release",
     srcs = [
+        ":kotlin",
         ":bazel_java_extractor",
         ":bazel_cxx_extractor",
         ":bazel_go_extractor",
@@ -56,6 +57,7 @@ genrule(
         "$(location //kythe/go/platform/tools/shasum_tool)",
         "$(location kythe-" + release_version + ".tar.gz)",
         "$(locations misc)",
+        "--cp $(location kotlin) indexers/kotlin_lib.jar",
         "--cp $(location java_indexer) indexers/java_indexer.jar",
         "--cp $(location jvm_indexer) indexers/jvm_indexer.jar",
         "--cp $(location cxx_indexer) indexers/cxx_indexer",
@@ -114,6 +116,11 @@ sh_test(
         "local",
         "manual",
     ],
+)
+
+filegroup(
+    name = "kotlin",
+    srcs = ["@jetbrains_kythe_kotlin//src/main/kotlin/org/jetbrains/kotlin/kythe"],
 )
 
 filegroup(
