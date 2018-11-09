@@ -1,0 +1,4 @@
+[submodule "kythe/kotlin"]
+	path = kythe/kotlin
+	url = git@github.com:schroederc/kotlin-kythe-plugin.git
+	branch = bazel-build
