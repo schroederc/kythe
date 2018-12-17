@@ -13,3 +13,6 @@ liveness_check:
   initial_delay_sec: 3600
 beta_settings:
   cloud_sql_instances: kythe-repo:us-west1:kythe-buildbot
+network:
+  forwarded_ports:
+    - 9989

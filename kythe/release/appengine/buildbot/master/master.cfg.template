@@ -33,6 +33,7 @@ c['buildbotNetUsageData'] = None
 # worker name and password must be configured on the worker.
 c['workers'] = [
     worker.Worker("local-worker", "@secret{worker_password}"),
+    worker.Worker("darwin-worker", "@secret{worker_password}"),
 ]
 
 # 'protocols' contains information about protocols which master will use for
@@ -100,6 +101,7 @@ bazelMaxVersion = '0.22.0'
 
 bazelBuilders = [
     'bazel-'+bazelMaxVersion,
+    'bazel-darwin',
 ]
 if bazelMinVersion != bazelMaxVersion:
     bazelBuilders += ['bazel-'+bazelMinVersion]
@@ -216,6 +218,13 @@ if bazelMinVersion != bazelMaxVersion:
                       'bazel_flags': ['--config=remote']},
           locks=[build_lock.access('counting')],
           factory=bazelKytheSteps))
+c['builders'].append(
+    util.BuilderConfig(
+        name="bazel-darwin",
+        workernames=["darwin-worker"],
+        properties={'bazel_version': bazelMaxVersion},
+        locks=[build_lock.access('counting')],
+        factory=bazelKytheSteps))
 c['builders'].append(
     util.BuilderConfig(
         name="bazel-"+bazelMaxVersion,
