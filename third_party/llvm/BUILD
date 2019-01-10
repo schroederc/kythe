@@ -1,6 +1,6 @@
 licenses(["notice"])
 
-load("//tools:build_rules/cc_resources.bzl", "cc_resources")
+load("@io_kythe//tools:build_rules/cc_resources.bzl", "cc_resources")
 
 package(default_visibility = ["//visibility:public"])
 

@@ -58,9 +58,9 @@ cc_library(
     srcs = ["semantic_hash.cc"],
     hdrs = ["semantic_hash.h"],
     deps = [
-        "//third_party/llvm",
         "//third_party/llvm/src:clang_builtin_headers",
         "@com_github_google_glog//:glog",
+        "@llvm",
     ],
 )
 
@@ -79,9 +79,9 @@ cc_library(
         "-Wno-implicit-fallthrough",
     ],
     deps = [
-        "//third_party/llvm",
         "//third_party/llvm/src:clang_builtin_headers",
         "@com_github_google_glog//:glog",
+        "@llvm",
     ],
 )
 
@@ -101,9 +101,9 @@ cc_library(
     deps = [
         ":indexer_ast_hooks",
         ":indexer_library_support",
-        "//third_party/llvm",
         "//third_party/llvm/src:clang_builtin_headers",
         "@com_github_google_glog//:glog",
+        "@llvm",
     ],
 )
 
@@ -118,12 +118,12 @@ cc_library(
     deps = [
         ":indexer_ast_hooks",
         ":indexer_library_support",
-        "//third_party/llvm",
         "//third_party/llvm/src:clang_builtin_headers",
         "@com_github_google_glog//:glog",
         "@com_google_absl//absl/strings",
         "@com_google_absl//absl/types:optional",
         "@com_googlesource_code_re2//:re2",
+        "@llvm",
     ],
 )
 
@@ -139,12 +139,12 @@ cc_library(
     ],
     deps = [
         ":kythe_claim_client",
-        "//third_party/llvm",
         "//third_party/llvm/src:clang_builtin_headers",
         "@com_github_google_glog//:glog",
         "@com_google_absl//absl/strings",
         "@com_google_absl//absl/types:optional",
         "@com_google_absl//absl/types:span",
+        "@llvm",
     ],
 )
 
@@ -176,10 +176,10 @@ cc_library(
         "//kythe/cxx/common:lib",
         "//kythe/cxx/common:scope_guard",
         "//kythe/cxx/extractor:supported_language",
-        "//third_party/llvm",
         "//third_party/llvm/src:clang_builtin_headers",
         "@com_github_google_glog//:glog",
         "@com_google_absl//absl/memory",
+        "@llvm",
     ],
 )
 
@@ -189,8 +189,8 @@ cc_library(
     hdrs = ["indexed_parent_map.h"],
     deps = [
         "//kythe/cxx/common:scope_guard",
-        "//third_party/llvm",
         "@com_github_google_glog//:glog",
+        "@llvm",
     ],
 )
 
@@ -200,8 +200,8 @@ cc_library(
     hdrs = ["indexed_parent_iterator.h"],
     deps = [
         ":indexed_parent_map",
-        "//third_party/llvm",
         "@com_google_absl//absl/types:optional",
+        "@llvm",
     ],
 )
 
@@ -209,7 +209,7 @@ cc_library(
     name = "type_map",
     srcs = ["type_map.cc"],
     hdrs = ["type_map.h"],
-    deps = ["//third_party/llvm"],
+    deps = ["@llvm"],
 )
 
 cc_library(
@@ -227,9 +227,9 @@ cc_library(
         ":kythe_claim_client",
         "//kythe/cxx/common:lib",
         "//kythe/cxx/extractor:supported_language",
-        "//third_party/llvm",
         "//third_party/llvm/src:clang_builtin_headers",
         "@com_github_google_glog//:glog",
+        "@llvm",
     ],
 )
 
@@ -251,9 +251,9 @@ cc_library(
         ":indexer_ast_hooks",
         "//kythe/cxx/common:lib",
         "//kythe/cxx/extractor:path_utils",
-        "//third_party/llvm",
         "//third_party/llvm/src:clang_builtin_headers",
         "@com_github_google_glog//:glog",
+        "@llvm",
     ],
 )
 
@@ -279,11 +279,11 @@ cc_library(
         "//kythe/cxx/common:path_utils",
         "//kythe/cxx/common/schema:edges",
         "//kythe/cxx/extractor:supported_language",
-        "//third_party/llvm",
         "//third_party/llvm/src:clang_builtin_headers",
         "@com_github_google_glog//:glog",
         "@com_google_absl//absl/strings",
         "@com_google_absl//absl/types:span",
+        "@llvm",
     ],
 )
 
@@ -304,9 +304,9 @@ cc_library(
         ":clang_utils",
         ":graph_observer",
         ":kythe_claim_client",
-        "//third_party/llvm",
         "//third_party/llvm/src:clang_builtin_headers",
         "@com_github_google_glog//:glog",
+        "@llvm",
     ],
 )
 
@@ -326,10 +326,10 @@ cc_library(
     deps = [
         ":indexer_ast_hooks",
         ":indexer_library_support",
-        "//third_party/llvm",
         "//third_party/llvm/src:clang_builtin_headers",
         "@com_github_google_glog//:glog",
         "@com_google_protobuf//:protobuf",
+        "@llvm",
     ],
 )
 
@@ -353,10 +353,10 @@ cc_library(
         "//kythe/proto:analysis_cc_proto",
         "//kythe/proto:common_cc_proto",
         "//kythe/proto:storage_cc_proto",
-        "//third_party/llvm",
         "@com_google_absl//absl/memory",
         "@com_google_absl//absl/types:optional",
         "@com_google_protobuf//:protobuf",
+        "@llvm",
     ],
 )
 
@@ -394,11 +394,11 @@ cc_library(
         "//kythe/proto:common_cc_proto",
         "//kythe/proto:cxx_cc_proto",
         "//kythe/proto:storage_cc_proto",
-        "//third_party/llvm",
         "//third_party/llvm/src:clang_builtin_headers",
         "@com_github_gflags_gflags//:gflags",
         "@com_github_google_glog//:glog",
         "@com_google_absl//absl/memory",
+        "@llvm",
     ],
 )
 
@@ -445,9 +445,9 @@ cc_library(
         ":lib",
         "//kythe/cxx/common/indexing:testlib",
         "//third_party:gtest",
-        "//third_party/llvm",
         "@com_google_absl//absl/memory",
         "@com_google_protobuf//:protobuf",
+        "@llvm",
     ],
 )
 

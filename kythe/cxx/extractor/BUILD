@@ -18,10 +18,10 @@ cc_library(
         "//external:zlib",
         "//kythe/cxx/common:lib",
         "//kythe/proto:analysis_cc_proto",
-        "//third_party/llvm",
         "@boringssl//:crypto",
         "@com_google_absl//absl/memory",
         "@com_google_protobuf//:protobuf",
+        "@llvm",
     ],
 )
 
@@ -67,8 +67,8 @@ cc_library(
     ],
     deps = [
         "//kythe/proto:cxx_cc_proto",
-        "//third_party/llvm",
         "@com_github_google_glog//:glog",
+        "@llvm",
     ],
 )
 
@@ -78,7 +78,7 @@ cc_library(
     hdrs = ["path_utils.h"],
     deps = [
         "//kythe/cxx/common:lib",
-        "//third_party/llvm",
+        "@llvm",
     ],
 )
 
@@ -86,7 +86,7 @@ cc_library(
     name = "supported_language",
     srcs = ["language.cc"],
     hdrs = ["language.h"],
-    deps = ["//third_party/llvm"],
+    deps = ["@llvm"],
 )
 
 cc_library(
@@ -103,8 +103,8 @@ cc_library(
         "-Wno-implicit-fallthrough",
     ],
     deps = [
-        "//third_party/llvm",
         "@com_github_google_glog//:glog",
+        "@llvm",
     ],
 )
 
@@ -122,7 +122,7 @@ cc_library(
     deps = [
         ":command_line_utils",
         "//third_party:gtest",
-        "//third_party/llvm",
+        "@llvm",
     ],
 )
 
@@ -162,7 +162,6 @@ cc_library(
         "//kythe/proto:analysis_cc_proto",
         "//kythe/proto:buildinfo_cc_proto",
         "//kythe/proto:cxx_cc_proto",
-        "//third_party/llvm",
         "//third_party/llvm/src:clang_builtin_headers",
         "//third_party/llvm/src:preprocessor_util_lib",
         "@boringssl//:crypto",
@@ -172,6 +171,7 @@ cc_library(
         "@com_google_absl//absl/strings",
         "@com_google_protobuf//:protobuf",
         "@com_googlesource_code_re2//:re2",
+        "@llvm",
     ],
 )
 
@@ -193,11 +193,11 @@ cc_library(
         ":supported_language",
         "//external:zlib",
         "//kythe/proto:analysis_cc_proto",
-        "//third_party/llvm",
         "@com_github_gflags_gflags//:gflags",
         "@com_github_google_glog//:glog",
         "@com_google_protobuf//:protobuf",
         "@com_googlesource_code_re2//:re2",
+        "@llvm",
     ],
 )
 
@@ -216,11 +216,11 @@ cc_library(
         ":supported_language",
         "//external:zlib",
         "//third_party/bazel:extra_actions_base_cc_proto",
-        "//third_party/llvm",
         "@com_github_gflags_gflags//:gflags",
         "@com_github_google_glog//:glog",
         "@com_google_protobuf//:protobuf",
         "@com_googlesource_code_re2//:re2",
+        "@llvm",
     ],
 )
 
@@ -240,11 +240,11 @@ cc_library(
         ":supported_language",
         "//external:zlib",
         "//third_party/bazel:extra_actions_base_cc_proto",
-        "//third_party/llvm",
         "@com_github_gflags_gflags//:gflags",
         "@com_github_google_glog//:glog",
         "@com_google_protobuf//:protobuf",
         "@com_googlesource_code_re2//:re2",
+        "@llvm",
     ],
 )
 
@@ -254,8 +254,8 @@ cc_library(
     hdrs = ["objc_bazel_support.h"],
     deps = [
         "//third_party/bazel:extra_actions_base_cc_proto",
-        "//third_party/llvm",
         "@com_googlesource_code_re2//:re2",
+        "@llvm",
     ],
 )
 
@@ -394,10 +394,10 @@ cc_library(
         "//external:zlib",
         "//kythe/proto:analysis_cc_proto",
         "//third_party:gtest",
-        "//third_party/llvm",
         "@com_github_google_glog//:glog",
         "@com_google_protobuf//:protobuf",
         "@com_googlesource_code_re2//:re2",
+        "@llvm",
     ],
 )
 

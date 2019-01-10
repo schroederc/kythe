@@ -24,7 +24,7 @@ filegroup(
         "//third_party/leiningen:license",
         "//third_party/libmemcached:COPYING",
         "//third_party/libuuid:COPYING",
-        "//third_party/llvm:license",
+        "@llvm//:license",
         "//third_party/ow2-asm:LICENSE.txt",
         "//third_party/re2:LICENSE",
         "//third_party/re2j:LICENSE",

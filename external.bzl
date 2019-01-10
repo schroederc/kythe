@@ -12,7 +12,46 @@ def _rule_dependencies():
     go_register_toolchains()
     rules_nodejs_dependencies()
 
+LLVM_ARCHIVES = {
+    "a42cde684126a3797f3eda9c894c379e7a8c66c1_777055562de6505702ba0c36210491a2436872e0": {
+        "linux_x86_64": "b51011573b089ae729c6e4931b1aa67466b0d1b81c881e24ca6959f4b630e8eb",
+        "darwin_x86_64": "afab90c401c4d06b010ecf0af81bf062db6087dcb1cf841bf25e89e00b3c4516",
+    },
+}
+
+CURRENT_LLVM_VERSION = "a42cde684126a3797f3eda9c894c379e7a8c66c1_777055562de6505702ba0c36210491a2436872e0"
+
+def _llvm_archive_impl(ctx):
+    res = ctx.execute(["uname", "-sm"])
+    if res.return_code != 0:
+        fail("Error getting system info")
+    system = res.stdout.strip().lower().replace(" ", "_")
+    ctx.download_and_extract(
+        sha256 = ctx.attr.archives[system],
+        stripPrefix = ctx.attr.stripPrefix,
+        type = ctx.attr.type,
+        url = [url.format(ctx.attr.version, system) for url in ctx.attr.urls],
+    )
+
+llvm_archive = repository_rule(
+    _llvm_archive_impl,
+    attrs = {
+        "archives": attr.string_dict(),
+        "stripPrefix": attr.string(),
+        "type": attr.string(default = "tar"),  # GCS decompresses the object on request
+        "urls": attr.string_list(default = ["https://storage.googleapis.com/kythe-external-deps/llvm_{}_{}.tar.gz"]),
+        "version": attr.string(),
+    },
+)
+
 def _cc_dependencies():
+    maybe(
+        llvm_archive,
+        name = "llvm",
+        archives = LLVM_ARCHIVES[CURRENT_LLVM_VERSION],
+        version = CURRENT_LLVM_VERSION,
+    )
+
     maybe(
         http_archive,
         name = "net_zlib",

@@ -1,0 +1,12 @@
+diff --git a/BUILD b/BUILD
+--- a/BUILD
++++ b/BUILD
+@@ -54,7 +54,7 @@ cc_library(
+         "llvm/build/lib/libLLVMBinaryFormat.a",
+         "llvm/build/lib/libLLVMSupport.a",
+         "llvm/build/lib/libLLVMDemangle.a",
+-        "//tools/modules:check_modules",
++        # "//tools/modules:check_modules",
+     ],
+     hdrs = glob([
+         "llvm/include/**/*.h",

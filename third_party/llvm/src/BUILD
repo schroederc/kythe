@@ -11,7 +11,7 @@ cc_library(
         "-Wno-unused-variable",
         "-Wno-implicit-fallthrough",
     ],
-    deps = ["//third_party/llvm"],
+    deps = ["@llvm"],
 )
 
 cc_library(
@@ -23,5 +23,5 @@ cc_library(
         "-Wno-unused-variable",
         "-Wno-implicit-fallthrough",
     ],
-    deps = ["//third_party/llvm:clang_builtin_headers_resources"],
+    deps = ["@llvm//:clang_builtin_headers_resources"],
 )
