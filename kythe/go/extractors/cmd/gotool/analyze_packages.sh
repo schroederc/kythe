@@ -17,7 +17,12 @@
 # Download, build, and extract a set of Go packages.  Resulting compilations
 # will be merged into a single .kzip archive in the "$OUTPUT" directory.
 
-: "${TMPDIR:=/tmp}" "${OUTPUT:=/output}"
+: "${TMPDIR:=/tmp}" "${OUTPUT:=/output}" "${VNAMES:=/vnames.json}"
+
+if [[ "$VNAMES" == "/vnames.json" && ! -r "$VNAMES" ]]; then
+  echo "WARNING: cannot read $VNAMES configuration" >&2
+  VNAMES=
+fi
 
 echo "Downloading $*" >&2
 go get -d "$@" || true
@@ -25,6 +30,7 @@ go get -d "$@" || true
 echo "Extracting $*" >&2
 parallel --will-cite \
   extract_go --continue -v \
+  --vnames="$VNAMES" \
   --goroot="$(go env GOROOT)" \
   --output="$TMPDIR/out.{#}.kzip" \
   {} ::: "$@"

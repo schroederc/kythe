@@ -87,8 +87,8 @@ type Extractor struct {
 	// Extra file paths to include in each compilation record.
 	ExtraFiles []string
 
-	// A function to generate a vname from a package's import path.  If nil,
-	// the extractor will use govname.ForPackage.
+	// A function to generate a vname from a package's import path.  If not given
+	// or returns nil, the extractor will use govname.ForPackage.
 	PackageVName func(corpus string, bp *build.Package) *spb.VName
 
 	// A function to convert a directory path to an import path.  If nil, the
@@ -172,10 +172,13 @@ func (e *Extractor) findPackage(importPath string) *Package {
 
 // vnameFor returns a vname for the specified package, handling the default.
 func (e *Extractor) vnameFor(bp *build.Package) *spb.VName {
+	var v *spb.VName
 	if e.PackageVName != nil {
-		return e.PackageVName(e.Corpus, bp)
+		v = e.PackageVName(e.Corpus, bp)
 	}
-	v := govname.ForPackage(e.Corpus, bp)
+	if v == nil {
+		v = govname.ForPackage(e.Corpus, bp)
+	}
 	v.Signature = "" // not useful in this context
 	return v
 }

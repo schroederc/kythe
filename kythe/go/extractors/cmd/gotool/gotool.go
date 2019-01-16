@@ -25,6 +25,7 @@ import (
 	"flag"
 	"fmt"
 	"go/build"
+	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -34,18 +35,22 @@ import (
 	"kythe.io/kythe/go/platform/kindex"
 	"kythe.io/kythe/go/platform/kzip"
 	"kythe.io/kythe/go/platform/vfs"
+	"kythe.io/kythe/go/util/vnameutil"
+
+	spb "kythe.io/kythe/proto/storage_go_proto"
 )
 
 var (
 	bc = build.Default // A shallow copy of the default build settings
 
-	corpus     = flag.String("corpus", "", "Default corpus name to use")
-	localPath  = flag.String("local_path", "", "Directory where relative imports are resolved")
-	outputPath = flag.String("output", "", "Output path (indexpack directory or .kzip filename)")
-	extraFiles = flag.String("extra_files", "", "Additional files to include in each compilation (CSV)")
-	byDir      = flag.Bool("bydir", false, "Import by directory rather than import path")
-	keepGoing  = flag.Bool("continue", false, "Continue past errors")
-	verbose    = flag.Bool("v", false, "Enable verbose logging")
+	corpus       = flag.String("corpus", "", "Default corpus name to use")
+	localPath    = flag.String("local_path", "", "Directory where relative imports are resolved")
+	outputPath   = flag.String("output", "", "Output path (indexpack directory or .kzip filename)")
+	extraFiles   = flag.String("extra_files", "", "Additional files to include in each compilation (CSV)")
+	byDir        = flag.Bool("bydir", false, "Import by directory rather than import path")
+	keepGoing    = flag.Bool("continue", false, "Continue past errors")
+	verbose      = flag.Bool("v", false, "Enable verbose logging")
+	vNamesConfig = flag.String("vnames", "", "Path to optional JSON VNames configuration file")
 )
 
 func init() {
@@ -106,6 +111,22 @@ func main() {
 			if err != nil {
 				log.Fatalf("Error finding absolute path of %s: %v", path, err)
 			}
+		}
+	}
+	if *vNamesConfig != "" {
+		data, err := ioutil.ReadFile(*vNamesConfig)
+		if err != nil {
+			log.Fatalf("Error reading --vnames %q: %v", *vNamesConfig, err)
+		}
+		rules, err := vnameutil.ParseRules(data)
+		if err != nil {
+			log.Fatalf("Error parsing --vnames %q: %v", *vNamesConfig, err)
+		}
+		ext.PackageVName = func(corpus string, bp *build.Package) *spb.VName {
+			if vn, ok := rules.Apply(bp.ImportPath); ok {
+				return vn
+			}
+			return nil
 		}
 	}
 
