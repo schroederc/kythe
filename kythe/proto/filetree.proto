@@ -33,8 +33,14 @@ message CorpusRootsRequest {}
 
 message CorpusRootsReply {
   message Corpus {
+    // Name of the corpus.
     string name = 1;
+
+    // Each known root within the corpus.
     repeated string root = 2;
+
+    // Each known build configuration within the corpus.
+    repeated string build_configuration = 3;
   }
   repeated Corpus corpus = 1;
 }
@@ -51,4 +57,8 @@ message DirectoryReply {
 
   // Set of file tickets contained within this directory.
   repeated string file = 2;
+
+  // TODO(schroederc): remove string tickets from reply
+  // TODO(schroederc): dirs:  common.CorpusPath + repeated build_configuration
+  // TODO(schroederc): files: common.CorpusPath + build_configuration
 }
