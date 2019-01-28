@@ -1,0 +1,18 @@
+{
+  "https://github.com/golang/protobuf.git": "347cf4a86c1cb8d262994d8ef5924d4576c5b331",
+  "https://github.com/grafeas/grafeas.git": "be069ffe1629ec278960f63f4017dc124cfca8fd",
+  "https://github.com/grpc/grpc-go.git": "0e8a6f931c94e8f3acc25da363f6980b8e0cf9b8",
+  "https://github.com/istio/istio.git": "1ad4e29576da6c722dcf19fc5df703beede92a4d",
+  "https://github.com/knative/serving.git": "4adecfe8bb4ee8b1265246a64c98179c3152f887",
+  "https://github.com/kubernetes/api.git": "173ce66c1e39d1d0f56e0b3347ff2988068aecd0",
+  "https://github.com/kubernetes/apimachinery.git": "d41becfba9ee9bf8e55cec1dd3934cd7cfc04b99",
+  "https://github.com/kubernetes/client-go.git": "583180148285a4936b884d8d27ed0063146a8df6",
+  "https://github.com/kubernetes/kubernetes.git": "c6a6c65e32eb60fdb7ccd1adbb60682b796e7e20",
+  "https://go.googlesource.com/build.git": "ad59fb13d31575de611cdf1252fa3fbfd8f07794",
+  "https://go.googlesource.com/crypto.git": "057139ce5d2bdbe6fe73c53679e24e9cf007f637",
+  "https://go.googlesource.com/net.git": "d26f9f9a57f3fab6a695bec0d84433c2c50f8bbf",
+  "https://go.googlesource.com/oauth2.git": "5dab4167f31cbd76b407f1486c86b40748bc5073",
+  "https://go.googlesource.com/sync.git": "37e7f081c4d4c64e13b10787722085407fe5d15f",
+  "https://go.googlesource.com/text.git": "e6919f6577db79269a6443b9dc46d18f2238fb5d",
+  "https://go.googlesource.com/tools.git": "cc6a436ffe6b424fffa1d91862c9b664d8407828"
+}

@@ -1,0 +1,32 @@
+timeout: '1800s'
+tags:
+  - 'gotool_extract'
+steps:
+- id: 'clone'
+  name: 'gcr.io/cloud-builders/git'
+  args: ['clone', '${_REPO}', '.']
+  dir: '/workspace/gopath/src/${_IMPORTPATH}'
+- id: 'checkout'
+  waitFor: 'clone'
+  name: 'gcr.io/cloud-builders/git'
+  args: ['checkout', '${_COMMIT}']
+  dir: '/workspace/gopath/src/${_IMPORTPATH}'
+- id: 'extract'
+  waitFor: 'checkout'
+  name: 'gcr.io/kythe-public/golang-extractor'
+  args: ['--canonicalize_package_corpus', '${_IMPORTPATH}/...']
+  env:
+    - 'OUTPUT=/workspace/out'
+- id: 'rename'
+  waitFor: 'extract'
+  name: 'ubuntu'
+  args: ['mv', '/workspace/out/compilations.kzip', '/workspace/out/${_COMMIT}.golang.kzip']
+  env:
+    - 'GOPATH=/workspace/gopath'
+    - 'OUTPUT=/workspace/out'
+artifacts:
+  objects:
+    location: 'gs://${_BUCKET_NAME}/${_REPO_ROOT}/'
+    paths:
+      - '/workspace/out/${_COMMIT}.golang.kzip'
+

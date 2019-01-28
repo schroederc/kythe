@@ -1,0 +1,73 @@
+local revisions = import "go_extractions.revisions.json";
+
+local
+  Repo = {
+    commit: revisions[self.repository],
+  },
+  Git = Repo + {
+    repository: "https://" + self.root + ".git",
+  },
+  Github = Git + {
+    root: self.importpath,
+  },
+  GolangX = Git + {
+    importpath: "golang.org/x/" + self.name,
+    root:       "go.googlesource.com/" + self.name,
+  },
+  K8s = Git + {
+    importpath: "k8s.io/" + self.name,
+    root:       "github.com/kubernetes/" + self.name,
+  };
+
+[
+  K8s + {
+    name:   "kubernetes",
+  },
+  K8s + {
+    name:   "apimachinery",
+  },
+  K8s + {
+    name:   "api",
+  },
+  K8s + {
+    name:   "client-go",
+  },
+  Git + {
+    importpath: "istio.io/istio",
+    root:       "github.com/istio/istio",
+  },
+  Github + {
+    importpath: "github.com/knative/serving",
+  },
+  Github + {
+    importpath: "github.com/grafeas/grafeas",
+  },
+  Github + {
+    importpath: "github.com/golang/protobuf",
+  },
+  Git + {
+    importpath: "google.golang.org/grpc",
+    root:       "github.com/grpc/grpc-go",
+  },
+  GolangX + {
+    name:   "crypto",
+  },
+  GolangX + {
+    name:   "net",
+  },
+  GolangX + {
+    name:   "oauth2",
+  },
+  GolangX + {
+    name:   "build",
+  },
+  GolangX + {
+    name:   "sync",
+  },
+  GolangX + {
+    name:   "text",
+  },
+  GolangX + {
+    name:   "tools",
+  },
+]
