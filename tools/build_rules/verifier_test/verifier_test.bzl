@@ -130,6 +130,7 @@ def extract(
         opts,
         deps = [],
         vnames_config = None,
+        supports_workers = False,
         mnemonic = "ExtractCompilation"):
     """Run the extractor tool under an environment to produce the given kzip
     output file.  The extractor is passed each string from opts after expanding
@@ -146,7 +147,7 @@ def extract(
       mnemonic: Mnemonic of the extractor's action
     """
     env = {
-        "KYTHE_OUTPUT_FILE": kzip.path,
+        # "KYTHE_OUTPUT_FILE": kzip.path,
         "KYTHE_ROOT_DIRECTORY": ".",
     }
 
@@ -165,6 +166,11 @@ def extract(
         args = ctx.actions.args()
         args.add_all([ctx.expand_location(o) for o in opts])
     args.add_all(srcs)
+    args.add_all(["--kythe_output_file", kzip])
+
+    execution_requirements = None
+    if supports_workers:
+        execution_requirements = {"supports-workers": "1"}
 
     ctx.actions.run(
         inputs = inputs,
@@ -174,6 +180,7 @@ def extract(
         executable = extractor,
         arguments = [args],
         env = env,
+        execution_requirements = execution_requirements,
     )
     return kzip
 

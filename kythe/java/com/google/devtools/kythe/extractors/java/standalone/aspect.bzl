@@ -33,20 +33,20 @@ def _extract_java_aspect(target, ctx):
         processorpath += [j.path for j in annotations.processor_classpath]
         processors = annotations.processor_classnames
 
+    args = ctx.actions.args()
+    args.set_param_file_format("multiline")
+    args.use_param_file("@%s", use_always = True)
+
     # Skip --release options; -source/-target/-bootclasspath are already set
-    args = _remove_flags(compilation.javac_options, {"--release": 1}) + [
-        "-cp",
-        ":".join(classpath),
-        "-bootclasspath",
-        ":".join(bootclasspath),
-        "-processorpath",
-        ":".join(processorpath),
-    ]
+    args.add_all(_remove_flags(compilation.javac_options, {"--release": 1}))
+    args.add_joined("-cp", classpath, join_with = ":")
+    args.add_joined("-bootclasspath", bootclasspath, join_with = ":")
+    args.add_joined("-processorpath", processorpath, join_with = ":")
 
     if processors:
-        args += ["-processor", ",".join(processors)]
+        args.add_joined("-processor", processors, join_with = ",")
     else:
-        args += ["-proc:none"]
+        args.add("-proc:none")
 
     deps = depset()
     for a in target.actions:
@@ -54,14 +54,15 @@ def _extract_java_aspect(target, ctx):
             deps += a.inputs
 
     extract(
-        ctx = ctx,
-        kzip = kzip,
-        extractor = ctx.executable._java_aspect_extractor,
-        vnames_config = ctx.file._java_aspect_vnames_config,
         srcs = ctx.rule.files.srcs,
-        opts = args,
-        deps = deps.to_list(),
+        ctx = ctx,
+        extractor = ctx.executable._java_aspect_extractor,
+        kzip = kzip,
         mnemonic = "JavaExtractKZip",
+        opts = args,
+        supports_workers = True,
+        vnames_config = ctx.file._java_aspect_vnames_config,
+        deps = deps.to_list(),
     )
 
     return struct(kzip = kzip, output_groups = {"kzip": [kzip]})

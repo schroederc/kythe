@@ -62,5 +62,6 @@ java_library(
         "//kythe/proto:analysis_java_proto",
         "//third_party/guava",
         "//third_party/javac",
+        "@io_bazel//src/main/protobuf:worker_protocol_java_proto",
     ],
 )

@@ -23,6 +23,8 @@ import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.common.hash.Hashing;
+import com.google.devtools.build.lib.worker.WorkerProtocol.WorkRequest;
+import com.google.devtools.build.lib.worker.WorkerProtocol.WorkResponse;
 import com.google.devtools.kythe.extractors.java.JavaCompilationUnitExtractor;
 import com.google.devtools.kythe.extractors.shared.CompilationDescription;
 import com.google.devtools.kythe.extractors.shared.FileVNames;
@@ -77,7 +79,31 @@ public abstract class AbstractJavacWrapper {
    */
   public void process(String[] args) {
     JsonUtil.usingTypeRegistry(JsonUtil.JSON_TYPE_REGISTRY);
+
+    if (args.length > 0 && args[0].equals("--persistent_worker")) {
+      runPersisentWorker();
+    } else {
+      realProcess(args);
+    }
+  }
+
+  private void realProcess(String[] args) {
     try {
+      args = getCleanedUpArguments(args);
+
+      String outputFile = null;
+      int j = 0;
+      for (int i = 0; i < args.length - 1; i++) {
+        if (args[i].equals("--kythe_output_file")) {
+          outputFile = args[++i];
+        } else {
+          args[j++] = args[i];
+        }
+      }
+      if (j != args.length) {
+        args = java.util.Arrays.copyOfRange(args, 0, j);
+      }
+
       if (!passThroughIfAnalysisOnly(args)) {
         String vnamesConfig = System.getenv("KYTHE_VNAMES");
         JavaCompilationUnitExtractor extractor;
@@ -93,9 +119,8 @@ public abstract class AbstractJavacWrapper {
                   readEnvironmentVariable("KYTHE_ROOT_DIRECTORY"));
         }
 
-        CompilationDescription indexInfo =
-            processCompilation(getCleanedUpArguments(args), extractor);
-        outputIndexInfo(indexInfo);
+        CompilationDescription indexInfo = processCompilation(args, extractor);
+        outputIndexInfo(indexInfo, readEnvironmentVariable("KYTHE_OUTPUT_FILE", outputFile));
 
         CompilationUnit compilationUnit = indexInfo.getCompilationUnit();
         if (compilationUnit.getHasCompileErrors()) {
@@ -116,8 +141,29 @@ public abstract class AbstractJavacWrapper {
     }
   }
 
-  private static void outputIndexInfo(CompilationDescription indexInfo) throws IOException {
-    String outputFile = System.getenv("KYTHE_OUTPUT_FILE");
+  private void runPersisentWorker() {
+    while (true) {
+      try {
+        WorkRequest request = WorkRequest.parseDelimitedFrom(System.in);
+        if (request == null) {
+          break;
+        }
+        WorkResponse.Builder response = WorkResponse.newBuilder();
+        try {
+          realProcess(request.getArgumentsList().toArray(new String[0]));
+        } catch (Throwable t) {
+          response.setExitCode(1).setOutput(t.toString());
+        }
+        response.build().writeDelimitedTo(System.out);
+        System.out.flush();
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+
+  private static void outputIndexInfo(CompilationDescription indexInfo, String outputFile)
+      throws IOException {
     if (!Strings.isNullOrEmpty(outputFile)) {
       if (outputFile.endsWith(IndexInfoUtils.KZIP_FILE_EXT)) {
         IndexInfoUtils.writeKzipToFile(indexInfo, outputFile);

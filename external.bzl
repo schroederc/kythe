@@ -720,6 +720,13 @@ def kythe_dependencies():
         urls = ["https://github.com/bazelbuild/bazel-skylib/archive/0.5.0.zip"],
     )
 
+    maybe(
+        http_archive,
+        name = "io_bazel",
+        strip_prefix = "bazel-0.23.2",
+        urls = ["https://github.com/bazelbuild/bazel/archive/0.23.2.zip"],
+    )
+
     _rule_dependencies()
     _sample_ui_dependencies()
     _bindings()
