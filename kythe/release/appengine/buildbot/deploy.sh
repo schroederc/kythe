@@ -19,7 +19,7 @@
 cd "$(dirname "$0")"
 
 # Cleanup secrets on exit
-trap "rm -rf '$PWD/secrets'*" EXIT ERR INT
+trap 'rm -rf "$PWD/secrets"*' EXIT ERR INT
 
 VERSION=v1
 if [[ "$1" == --cloud ]]; then
