@@ -28,6 +28,7 @@ load(
     "find_java_runtime_toolchain",
     "find_java_toolchain",
 )
+load("//kythe/java/com/google/devtools/kythe/extractors/java/standalone:aspect.bzl", "extract_java")
 
 KytheGeneratedSourcesInfo = provider(
     doc = "Generated Java source directory and jar.",
@@ -150,7 +151,8 @@ _default_java_extractor_opts = [
 
 def java_verifier_test(
         name,
-        srcs,
+        srcs = None,
+        compilation = None,
         meta = [],
         verifier_deps = [],
         deps = [],
@@ -179,20 +181,24 @@ def java_verifier_test(
       extra_goals: List of text files containing verifier goals additional to those in srcs
       vnames_config: Optional path to a VName configuration file
     """
-    kzip = _invoke(
-        java_extract_kzip,
-        name = name + "_kzip",
-        testonly = True,
-        srcs = srcs,
-        data = meta,
-        extractor = extractor,
-        opts = extractor_opts,
-        tags = tags,
-        visibility = visibility,
-        vnames_config = vnames_config,
-        # This is a hack to depend on the .jar producer.
-        deps = deps + [d + "_kzip" for d in verifier_deps],
-    )
+    if compilation:
+        kzip = name + "_kzip"
+        extract_java(name = kzip, compilation = compilation)
+    else:
+        kzip = _invoke(
+            java_extract_kzip,
+            name = name + "_kzip",
+            testonly = True,
+            srcs = srcs,
+            data = meta,
+            extractor = extractor,
+            opts = extractor_opts,
+            tags = tags,
+            visibility = visibility,
+            vnames_config = vnames_config,
+            # This is a hack to depend on the .jar producer.
+            deps = deps + [d + "_kzip" for d in verifier_deps],
+        )
     indexer = "//kythe/java/com/google/devtools/kythe/analyzers/java:indexer"
     tools = []
     if load_plugin:

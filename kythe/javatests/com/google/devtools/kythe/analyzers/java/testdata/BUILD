@@ -21,6 +21,11 @@ java_library(
 )
 
 java_verifier_test(
+    name = "testdata_test",
+    compilation = ":testdata",
+)
+
+java_verifier_test(
     name = "default_package_tests",
     size = "small",
     srcs = ["DefaultPackage.java"],

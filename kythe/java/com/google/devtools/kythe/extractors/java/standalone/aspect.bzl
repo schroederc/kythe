@@ -14,57 +14,60 @@
 
 load("//tools/build_rules/verifier_test:verifier_test.bzl", "extract")
 
-def _extract_java_aspect(target, ctx):
+def _extract_java(target, ctx):
     if JavaInfo not in target or not hasattr(ctx.rule.attr, "srcs"):
-        return struct()
+        return None
 
-    kzip = ctx.actions.declare_file(ctx.label.name + ".kzip")
+    kzip = ctx.actions.declare_file(ctx.label.name + ".java.kzip")
 
     info = target[JavaInfo]
     compilation = info.compilation_info
     annotations = info.annotation_processing
 
-    classpath = [j.path for j in compilation.compilation_classpath]
+    classpath = [j.path for j in compilation.compilation_classpath.to_list()]
     bootclasspath = [j.path for j in compilation.boot_classpath]
 
     processorpath = []
     processors = []
     if annotations and annotations.enabled:
-        processorpath += [j.path for j in annotations.processor_classpath]
+        processorpath += [j.path for j in annotations.processor_classpath.to_list()]
         processors = annotations.processor_classnames
 
+    args = ctx.actions.args()
+
     # Skip --release options; -source/-target/-bootclasspath are already set
-    args = _remove_flags(compilation.javac_options, {"--release": 1}) + [
-        "-cp",
-        ":".join(classpath),
-        "-bootclasspath",
-        ":".join(bootclasspath),
-        "-processorpath",
-        ":".join(processorpath),
-    ]
+    args.add_all(_remove_flags(compilation.javac_options, {"--release": 1}))
+    args.add_joined("-cp", classpath, join_with = ":")
+    args.add_joined("-bootclasspath", bootclasspath, join_with = ":")
+    args.add_joined("-processorpath", processorpath, join_with = ":")
 
     if processors:
-        args += ["-processor", ",".join(processors)]
+        args.add_joined("-processor", processors, join_with = ",")
     else:
-        args += ["-proc:none"]
+        args.add("-proc:none")
 
-    deps = depset()
+    deps = []
     for a in target.actions:
         if a.mnemonic == "Javac":
-            deps += a.inputs
+            deps += [a.inputs]
 
     extract(
-        ctx = ctx,
-        kzip = kzip,
-        extractor = ctx.executable._java_aspect_extractor,
-        vnames_config = ctx.file._java_aspect_vnames_config,
         srcs = ctx.rule.files.srcs,
-        opts = args,
-        deps = deps.to_list(),
+        ctx = ctx,
+        extractor = ctx.executable._java_aspect_extractor,
+        kzip = kzip,
         mnemonic = "JavaExtractKZip",
+        opts = args,
+        vnames_config = ctx.file._java_aspect_vnames_config,
+        deps = depset(transitive = deps).to_list(),
     )
+    return kzip
 
-    return struct(kzip = kzip, output_groups = {"kzip": [kzip]})
+def _extract_java_aspect(target, ctx):
+    kzip = _extract_java(target, ctx)
+    if not kzip:
+        return struct()
+    return [OutputGroupInfo(kzip = [kzip])]
 
 def _remove_flags(lst, to_remove):
     res = []
@@ -97,5 +100,16 @@ extract_java_aspect = aspect(
             default = Label("//external:vnames_config"),
             allow_single_file = True,
         ),
+    },
+)
+
+def _extract_java_impl(ctx):
+    output = ctx.attr.compilation[OutputGroupInfo]
+    return [output, DefaultInfo(files = output.kzip)]
+
+extract_java = rule(
+    implementation = _extract_java_impl,
+    attrs = {
+        "compilation": attr.label(aspects = [extract_java_aspect]),
     },
 )
